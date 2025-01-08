@@ -8,40 +8,30 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 using System.Windows.Forms;
+using TicketTrackingTool.Assets;
 using static System.Windows.Forms.VisualStyles.VisualStyleElement;
 
 namespace TicketTrackingTool
 {
-    public partial class MainForm : Form
+    public partial class MainForm : BaseForm
     {
         public MainForm()
         {
             InitializeComponent();
-            // Get the project root dynamically
-            string projectRoot = Directory.GetParent(AppDomain.CurrentDomain.BaseDirectory).Parent.Parent.FullName;
-
-            // Build the path to the image
-            string imagePath = Path.Combine(projectRoot, "Assets", "WACOG.jpg");
-            if (File.Exists(imagePath))
-            {
-                pictureBox1.Image = Image.FromFile(imagePath);
-            }
-            else
-            {
-                MessageBox.Show($"Error: Image not found at path:\n{imagePath}");
-            }
-            pictureBox1.SizeMode = PictureBoxSizeMode.Zoom;
-            
+            //Initialize Assets
+            AssetManager.SetPictureBox(pictureBox1, AssetManager.WacogImagePath);
         }
 
         private void button1_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Launched CSV Parser!");
+            CSVModeForm CSVMode = new CSVModeForm();
+            this.Hide();
+            CSVMode.Show();
         }
 
         private void button2_Click(object sender, EventArgs e)
         {
-            MessageBox.Show("Launched API Runner!");
+            MessageBox.Show("API is not developed yet.");
         }
     }
 }
