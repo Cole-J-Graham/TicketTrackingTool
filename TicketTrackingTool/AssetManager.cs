@@ -19,7 +19,7 @@ namespace TicketTrackingTool
 
         public static string AssetsBasePath => assetsBasePath;
 
-        public static string WacogImagePath => Path.Combine(assetsBasePath, "WACOG.jpg");
+        public static string WacogImagePath => Path.Combine(assetsBasePath, "WACOG.png");
 
         public static Image LoadImage(string assetName)
         {
