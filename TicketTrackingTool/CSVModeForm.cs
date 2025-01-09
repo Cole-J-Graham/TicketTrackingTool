@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.ComponentModel;
 using System.Data;
+using System.Diagnostics.Eventing.Reader;
 using System.Drawing;
 using System.IO;
 using System.Linq;
@@ -80,19 +81,50 @@ namespace TicketTrackingTool.Assets
         // CSV File Parser
         private void ParseCsvFile(string filePath)
         {
+            // Show progress bar before starting
+            progressBar1.Visible = true;
+            progressBar1.Style = ProgressBarStyle.Continuous;
+            progressBar1.Minimum = 0;
+            progressBar1.Value = 0;
+
             using (var reader = new StreamReader(filePath))
             {
+                bool columnsAdded = false;
+
+                // Count the total lines in the file for progress tracking
+                var totalLines = File.ReadLines(filePath).Count();
+                progressBar1.Maximum = totalLines;
+
                 while (!reader.EndOfStream)
                 {
                     var line = reader.ReadLine();
                     var values = line.Split(',');
 
-                    foreach (var value in values)
+                    // Add columns only once
+                    if (!columnsAdded)
                     {
-                        Console.WriteLine($"Value: {value}");
+                        for (int i = 0; i < values.Length; i++)
+                        {
+                            dataGridView1.Columns.Add($"Column{i + 1}", $"Column {i + 1}");
+                        }
+                        columnsAdded = true; // Prevent further column additions
                     }
+
+                    // Add the row to the DataGridView
+                    dataGridView1.Rows.Add(values);
+
+                    // Update the progress bar
+                    progressBar1.Value++;
                 }
             }
+
+            // Hide progress bar after parsing is done
+            progressBar1.Hide();
+        }
+
+        private void tabPage1_Click(object sender, EventArgs e)
+        {
+
         }
     }
 }
