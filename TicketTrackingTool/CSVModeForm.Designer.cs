@@ -37,6 +37,8 @@
             this.dataGridView2 = new System.Windows.Forms.DataGridView();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
+            this.textBox1 = new System.Windows.Forms.TextBox();
+            this.Search = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -99,6 +101,7 @@
             this.dataGridView1.Name = "dataGridView1";
             this.dataGridView1.Size = new System.Drawing.Size(706, 238);
             this.dataGridView1.TabIndex = 0;
+            this.dataGridView1.VirtualMode = true;
             // 
             // tabPage2
             // 
@@ -121,14 +124,32 @@
             this.dataGridView2.Name = "dataGridView2";
             this.dataGridView2.Size = new System.Drawing.Size(706, 238);
             this.dataGridView2.TabIndex = 0;
+            this.dataGridView2.VirtualMode = true;
             // 
             // progressBar1
             // 
-            this.progressBar1.Location = new System.Drawing.Point(33, 142);
+            this.progressBar1.Location = new System.Drawing.Point(607, 142);
             this.progressBar1.Name = "progressBar1";
-            this.progressBar1.Size = new System.Drawing.Size(152, 20);
+            this.progressBar1.Size = new System.Drawing.Size(146, 20);
             this.progressBar1.TabIndex = 4;
             this.progressBar1.Visible = false;
+            // 
+            // textBox1
+            // 
+            this.textBox1.Location = new System.Drawing.Point(33, 116);
+            this.textBox1.Name = "textBox1";
+            this.textBox1.Size = new System.Drawing.Size(192, 20);
+            this.textBox1.TabIndex = 5;
+            // 
+            // Search
+            // 
+            this.Search.Location = new System.Drawing.Point(231, 113);
+            this.Search.Name = "Search";
+            this.Search.Size = new System.Drawing.Size(75, 23);
+            this.Search.TabIndex = 6;
+            this.Search.Text = "Search";
+            this.Search.UseVisualStyleBackColor = true;
+            this.Search.Click += new System.EventHandler(this.button2_Click);
             // 
             // CSVModeForm
             // 
@@ -136,6 +157,8 @@
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.BackColor = System.Drawing.Color.Indigo;
             this.ClientSize = new System.Drawing.Size(800, 450);
+            this.Controls.Add(this.Search);
+            this.Controls.Add(this.textBox1);
             this.Controls.Add(this.progressBar1);
             this.Controls.Add(this.tabControl1);
             this.Controls.Add(this.button1);
@@ -150,6 +173,7 @@
             this.tabPage2.ResumeLayout(false);
             ((System.ComponentModel.ISupportInitialize)(this.dataGridView2)).EndInit();
             this.ResumeLayout(false);
+            this.PerformLayout();
 
         }
 
@@ -164,5 +188,7 @@
         private System.Windows.Forms.DataGridView dataGridView2;
         private System.ComponentModel.BackgroundWorker backgroundWorker1;
         private System.Windows.Forms.ProgressBar progressBar1;
+        private System.Windows.Forms.TextBox textBox1;
+        private System.Windows.Forms.Button Search;
     }
 }
