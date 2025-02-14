@@ -1,0 +1,1 @@
+This is a tracking tool based off of Ninjaone statistics. It's designed to parse data and display useful and detailed analytics along with automated reports to assist with data gathering and analysis.
