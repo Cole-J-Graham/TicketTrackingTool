@@ -1,4 +1,4 @@
-- ## Purpose and Goal
+## Purpose and Goal
 This is a tracking tool based off of Ninja One statistics. It's designed to parse data and display useful and detailed analytics along with automated reports to assist with data gathering and analysis. The goal of this project is to make a proof of concept that shows such custom software would be useful and eventual implementation of much more in depth features.
 
 ## Design
