@@ -66,6 +66,7 @@
     </Compile>
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <Compile Include="StatsManager.cs" />
     <EmbeddedResource Include="CSVModeForm.resx">
       <DependentUpon>CSVModeForm.cs</DependentUpon>
     </EmbeddedResource>
