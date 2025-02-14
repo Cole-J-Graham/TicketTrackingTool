@@ -4,6 +4,7 @@ using System.Windows.Forms;
 using System.Xml.Linq;
 using System;
 using System.Linq;
+using System.Data;
 
 namespace Stats
 {
@@ -150,9 +151,136 @@ namespace Stats
             }
         }
 
-        public static void calculateCategory()
+        public static void CalculateDeviceTrends(
+            string deviceColumnName,
+            string dateColumnName,
+            List<string[]> data,
+            DataGridView dataView,
+            Chart chart)
         {
+            // Ensure that data exists.
+            if (data == null || data.Count == 0)
+            {
+                MessageBox.Show("No data available to calculate statistics.");
+                return;
+            }
 
+            // Locate the device and date columns (case-insensitive).
+            int deviceColumnIndex = -1;
+            int dateColumnIndex = -1;
+            foreach (DataGridViewColumn column in dataView.Columns)
+            {
+                if (column.HeaderText.Equals(deviceColumnName, StringComparison.OrdinalIgnoreCase))
+                    deviceColumnIndex = column.Index;
+                if (column.HeaderText.Equals(dateColumnName, StringComparison.OrdinalIgnoreCase))
+                    dateColumnIndex = column.Index;
+            }
+            if (deviceColumnIndex == -1)
+            {
+                MessageBox.Show($"The '{deviceColumnName}' column was not found in the data.");
+                return;
+            }
+            if (dateColumnIndex == -1)
+            {
+                MessageBox.Show($"The '{dateColumnName}' column was not found in the data.");
+                return;
+            }
+
+            // Build a dictionary that maps each device to a dictionary mapping date -> count.
+            // For example: { "WACOG-1900": { 2/13/2025: 3, 2/14/2025: 1 }, ... }
+            Dictionary<string, Dictionary<DateTime, int>> deviceDateCounts = new Dictionary<string, Dictionary<DateTime, int>>();
+            foreach (var row in data)
+            {
+                if (row.Length > deviceColumnIndex && row.Length > dateColumnIndex)
+                {
+                    // Clean up the device string.
+                    string deviceText = row[deviceColumnIndex].Replace("\"", "").Trim();
+                    // Clean up the date string.
+                    string dateString = row[dateColumnIndex].Replace("\"", "").Trim();
+                    if (DateTime.TryParse(dateString, out DateTime createdDate))
+                    {
+                        DateTime dateOnly = createdDate.Date;
+                        if (!deviceDateCounts.ContainsKey(deviceText))
+                        {
+                            deviceDateCounts[deviceText] = new Dictionary<DateTime, int>();
+                        }
+                        if (deviceDateCounts[deviceText].ContainsKey(dateOnly))
+                        {
+                            deviceDateCounts[deviceText][dateOnly]++;
+                        }
+                        else
+                        {
+                            deviceDateCounts[deviceText][dateOnly] = 1;
+                        }
+                    }
+                }
+            }
+
+            // Clear and configure the chart.
+            chart.Series.Clear();
+            chart.ChartAreas[0].AxisX.LabelStyle.Format = "MM/dd/yyyy";
+            chart.ChartAreas[0].AxisX.Interval = 1;
+            chart.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Days;
+            chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+
+            // Determine global min and max dates across all devices.
+            DateTime? globalMinDate = null;
+            DateTime? globalMaxDate = null;
+
+            // For each device, create a series.
+            foreach (var deviceEntry in deviceDateCounts)
+            {
+                // Sort the dates for this device.
+                var sortedDates = deviceEntry.Value.OrderBy(kvp => kvp.Key).ToList();
+                if (sortedDates.Count == 0)
+                    continue;
+
+                // Update global min/max.
+                DateTime localMin = sortedDates.First().Key;
+                DateTime localMax = sortedDates.Last().Key;
+                if (!globalMinDate.HasValue || localMin < globalMinDate.Value)
+                    globalMinDate = localMin;
+                if (!globalMaxDate.HasValue || localMax > globalMaxDate.Value)
+                    globalMaxDate = localMax;
+
+                Series series = new Series(deviceEntry.Key)
+                {
+                    ChartType = SeriesChartType.Line,
+                    XValueType = ChartValueType.Date,
+                    BorderWidth = 2,
+                    MarkerStyle = MarkerStyle.Circle,
+                    MarkerSize = 6,
+                    IsValueShownAsLabel = false // Set to true if you want labels on every point
+                };
+
+                foreach (var dateCount in sortedDates)
+                {
+                    series.Points.AddXY(dateCount.Key, dateCount.Value);
+                }
+
+                // Optionally, add tooltips.
+                foreach (DataPoint pt in series.Points)
+                {
+                    pt.ToolTip = $"Device: {deviceEntry.Key}\nDate: {DateTime.FromOADate(pt.XValue):MM/dd/yyyy}\nCount: {pt.YValues[0]}";
+                }
+                chart.Series.Add(series);
+            }
+
+            // Set a zoom range for the X-axis if needed.
+            if (globalMinDate.HasValue && globalMaxDate.HasValue)
+            {
+                if ((globalMaxDate.Value - globalMinDate.Value).TotalDays > 30)
+                {
+                    DateTime zoomStart = globalMaxDate.Value.AddDays(-30);
+                    chart.ChartAreas[0].AxisX.ScaleView.Zoom(zoomStart.ToOADate(), globalMaxDate.Value.ToOADate());
+                }
+                else
+                {
+                    chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+                }
+            }
         }
+
+
     }
 }

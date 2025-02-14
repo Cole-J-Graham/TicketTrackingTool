@@ -78,15 +78,15 @@ namespace TicketTrackingTool.Assets
                 string filePath = openFileDialog.FileName;
                 MessageBox.Show($"You selected: {filePath}");
 
-                ParseCsvFile(filePath); // Parse and load data into memory
+                parseCsvFile(filePath); // Parse and load data into memory
                 _filteredData = _data;
             }
         }
-        private void ParseCsvFile(string filePath)
+        private void parseCsvFile(string filePath)
         {
             try
             {
-                // Show progress bar before starting
+                //Show progress bar before starting
                 progressBar1.Visible = true;
                 progressBar1.Style = ProgressBarStyle.Continuous;
                 progressBar1.Minimum = 0;
@@ -98,7 +98,7 @@ namespace TicketTrackingTool.Assets
                 {
                     bool isFirstLine = true;
 
-                    // Count the total lines in the file for progress tracking
+                    //Count the total lines in the file for progress tracking
                     var totalLines = File.ReadLines(filePath).Count();
                     progressBar1.Maximum = totalLines;
 
@@ -109,7 +109,7 @@ namespace TicketTrackingTool.Assets
 
                         if (isFirstLine)
                         {
-                            // Define column names using the header row
+                            //Define column names using the header row
                             _columnCount = values.Length;
                             for (int i = 0; i < _columnCount; i++)
                             {
@@ -122,24 +122,30 @@ namespace TicketTrackingTool.Assets
                         }
                         else
                         {
-                            // Add the parsed row to the data list
+                            //Add the parsed row to the data list
                             _data.Add(values);
                         }
-                        // Update the progress bar
+                        //Update the progress bar
                         progressBar1.Value++;
                     }
 
-                    // Set the row count for the DataGridView (virtual mode)
+                    //Set the row count for the DataGridView (virtual mode)
                     dataGridView1.RowCount = _data.Count;
                 }
-                // Hide progress bar after parsing is done
+                //Hide progress bar after parsing is done
                 progressBar1.Hide();
-                Stats.StatsManager.calculateStats(_data, dataGridView1, chart1, trendLabel);
+                //Run all statistics functions for the "Ticket Analytics" tab
+                runStatistics();
             }
             catch (Exception ex)
             {
                 MessageBox.Show($"Error parsing file: {ex.Message}");
             }
+        }
+        private void runStatistics()
+        {
+            StatsManager.calculateStats(_data, dataGridView1, chart1, trendLabel);
+            StatsManager.CalculateDeviceTrends("Device", "Created", _data, dataGridView1, chart2);
         }
 
         //Search Functions
