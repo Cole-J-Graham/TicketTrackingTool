@@ -9,11 +9,13 @@ using Stats;
 
 namespace TicketTrackingTool.Assets
 {
+
     public partial class CSVModeForm : BaseForm
     {
         private List<string[]> _data; //Store CSV data in memory
         private List<string[]> _filteredData; //Store filtered data
         private int _columnCount; //Track the number of columns
+
 
         //Constructor
         public CSVModeForm()
@@ -149,34 +151,60 @@ namespace TicketTrackingTool.Assets
         }
 
         //Search Functions
+        private void searchKeyDown(object sender, KeyPressEventArgs e)
+        {
+            string query = searchBar.Text;
+            //Check if there is text in the search bar, if so then perform the search
+            if (e.KeyChar == 13)
+            {
+                if(query == "")
+                {
+                    MessageBox.Show("Query must have text!");
+                } else
+                {
+                    performSearch(query);
+                }
+            } 
+        }
         private void searchButton(object sender, EventArgs e)
         {
-            string query = textBox1.Text;
+            //Search button function
+            string query = searchBar.Text;
             performSearch(query);
         }
         private void performSearch(string query)
         {
-            try
+            //Check if there is any data in the list, if there is none notify the user
+            if (_data != null && _data.Any())
             {
-                // Filter data based on the query
-                _filteredData = searchData(query);
-
-                // Update the DataGridView row count for virtual mode
-                dataGridView1.RowCount = _filteredData.Count;
-
-                // Refresh the DataGridView to display filtered results
-                dataGridView1.Refresh();
-
-                // Show a message if no results are found
-                if (_filteredData.Count == 0)
+                try
                 {
-                    MessageBox.Show("No results found.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    //Filter data based on the query
+                    _filteredData = searchData(query);
+
+                    //Update the DataGridView row count for virtual mode
+                    dataGridView1.RowCount = _filteredData.Count;
+
+                    //Refresh the DataGridView to display filtered results
+                    dataGridView1.Refresh();
+
+                    //Show a message if no results are found
+                    if (_filteredData.Count == 0)
+                    {
+                        MessageBox.Show("No results found.", "Search Results", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                    }
                 }
-            }
-            catch (Exception ex)
+                catch (Exception ex)
+                {
+                    //Show a message if an error occurs
+                    MessageBox.Show($"Error during search: {ex.Message}");
+                }
+            } else
             {
-                MessageBox.Show($"Error during search: {ex.Message}");
+                //Show a message if there is no data to search
+                MessageBox.Show("Cannot search without any data!");
             }
+            
         }
         private List<string[]> searchData(string query)
         {
