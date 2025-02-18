@@ -75,6 +75,7 @@ namespace Stats
             chart.ChartAreas[0].AxisX.Interval = 1;
             chart.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Days;
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
+            chart.ChartAreas[0].AxisY.Title = "Ticket Trend by Timeline";
 
             //Create the main series
             Series mainSeries = new Series("Tickets Created")
@@ -85,7 +86,7 @@ namespace Stats
                 MarkerStyle = MarkerStyle.Circle,
                 MarkerSize = 8,
                 IsValueShownAsLabel = true,
-                LabelForeColor = System.Drawing.Color.DarkBlue
+                LabelForeColor = System.Drawing.Color.DarkBlue,
             };
             foreach (var kvp in sortedTicketCounts)
             {
