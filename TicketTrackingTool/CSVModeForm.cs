@@ -98,7 +98,7 @@ namespace TicketTrackingTool.Assets
         {
             try
             {
-                //Show progress bar before starting
+                // Show progress bar before starting
                 progressBar1.Visible = true;
                 progressBar1.Style = ProgressBarStyle.Continuous;
                 progressBar1.Minimum = 0;
@@ -107,32 +107,31 @@ namespace TicketTrackingTool.Assets
                 if (_data != null)
                 {
                     _data.Clear();
-                } else
+                }
+                else
                 {
-                    _data = new List<string[]>(); // Initialize data storage
+                    _data = new List<string[]>();
                 }
 
-                
-
-                //Clear any existing columns in the DataGridView so we get a fresh start
+                // Clear any existing columns in the DataGridView so we get a fresh start
                 dataGridView1.Columns.Clear();
 
                 using (var reader = new StreamReader(filePath))
                 {
                     bool isFirstLine = true;
-
-                    //Count the total lines in the file for progress tracking
+                    // Count the total lines in the file for progress tracking
                     var totalLines = File.ReadLines(filePath).Count();
                     progressBar1.Maximum = totalLines;
 
                     while (!reader.EndOfStream)
                     {
                         var line = reader.ReadLine();
-                        var values = line.Split(',');
+                        // Use custom CSV parser instead of Split(',')
+                        var values = ParseCsvLine(line);
 
                         if (isFirstLine)
                         {
-                            //Define column names using the header row
+                            // Define column names using the header row
                             _columnCount = values.Length;
                             for (int i = 0; i < _columnCount; i++)
                             {
@@ -145,19 +144,19 @@ namespace TicketTrackingTool.Assets
                         }
                         else
                         {
-                            //Add the parsed row to the data list
+                            // Add the parsed row to the data list
                             _data.Add(values);
                         }
-                        //Update the progress bar
+                        // Update the progress bar
                         progressBar1.Value++;
                     }
 
-                    //Set the row count for the DataGridView (virtual mode)
+                    // Set the row count for the DataGridView (virtual mode)
                     dataGridView1.RowCount = _data.Count;
                 }
-                //Hide progress bar after parsing is done
+                // Hide progress bar after parsing is done
                 progressBar1.Hide();
-                //Run all statistics functions for the "Ticket Analytics" tab
+                // Run all statistics functions for the "Ticket Analytics" tab
                 runStatistics();
             }
             catch (Exception ex)
@@ -165,10 +164,52 @@ namespace TicketTrackingTool.Assets
                 MessageBox.Show($"Error parsing file: {ex.Message}");
             }
         }
+        private static string[] ParseCsvLine(string line)
+        {
+            var fields = new List<string>();
+            bool inQuotes = false;
+            var field = new System.Text.StringBuilder();
+
+            for (int i = 0; i < line.Length; i++)
+            {
+                char c = line[i];
+
+                if (c == '"')
+                {
+                    // If already in quotes and the next character is also a quote, treat it as an escaped quote.
+                    if (inQuotes && i + 1 < line.Length && line[i + 1] == '"')
+                    {
+                        field.Append('"');
+                        i++; // Skip the escaped quote.
+                    }
+                    else
+                    {
+                        // Toggle the inQuotes flag.
+                        inQuotes = !inQuotes;
+                    }
+                }
+                else if (c == ',' && !inQuotes)
+                {
+                    // Indicate new field.
+                    fields.Add(field.ToString());
+                    field.Clear();
+                }
+                else
+                {
+                    field.Append(c);
+                }
+            }
+            // Add the last field.
+            fields.Add(field.ToString());
+
+            return fields.ToArray();
+        }
+
         private void runStatistics()
         {
             StatsManager.calculateStats(_data, dataGridView1, chart1, trendLabel);
-            StatsManager.CalculateDeviceTrends("Tags", "Created", _data, dataGridView1, chart2);
+            StatsManager.CalculateDeviceTrends("Device", "Created", _data, dataGridView1, chart2);
+            StatsManager.DisplayComprehensiveHandlingTimeStats(_data, dataGridView1, summaryDataGrid);
         }
 
         //Search Functions

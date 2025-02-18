@@ -310,5 +310,98 @@ namespace Stats
             chart.Update();
             chart.Refresh();
         }
+
+        public static void DisplayComprehensiveHandlingTimeStats(
+            List<string[]> data,
+            DataGridView dataView,
+            DataGridView summaryGrid)
+        {
+            // Ensure data exists.
+            if (data == null || data.Count == 0)
+            {
+                MessageBox.Show("No data available to calculate handling time statistics.");
+                return;
+            }
+
+            // Locate the "Time" column (case-insensitive)
+            int timeColumnIndex = -1;
+            foreach (DataGridViewColumn column in dataView.Columns)
+            {
+                if (column.HeaderText.Equals("Time", StringComparison.OrdinalIgnoreCase))
+                {
+                    timeColumnIndex = column.Index;
+                    break;
+                }
+            }
+            if (timeColumnIndex == -1)
+            {
+                MessageBox.Show("The 'Time' column was not found in the data.");
+                return;
+            }
+
+            // Build a list of handling times.
+            List<TimeSpan> handlingTimes = new List<TimeSpan>();
+            foreach (var row in data)
+            {
+                if (row.Length > timeColumnIndex)
+                {
+                    string timeString = row[timeColumnIndex].Replace("\"", "").Trim();
+                    if (TimeSpan.TryParse(timeString, out TimeSpan ts))
+                    {
+                        handlingTimes.Add(ts);
+                    }
+                }
+            }
+            if (handlingTimes.Count == 0)
+            {
+                MessageBox.Show("No valid handling time entries were found.");
+                return;
+            }
+
+            // Calculate basic metrics.
+            int count = handlingTimes.Count;
+            TimeSpan minTime = handlingTimes.Min();
+            TimeSpan maxTime = handlingTimes.Max();
+            long totalTicks = handlingTimes.Sum(t => t.Ticks);
+            TimeSpan averageTime = new TimeSpan(totalTicks / count);
+
+            // Calculate median.
+            var sortedTimes = handlingTimes.OrderBy(t => t).ToList();
+            TimeSpan medianTime;
+            if (count % 2 == 1)
+                medianTime = sortedTimes[count / 2];
+            else
+            {
+                TimeSpan middle1 = sortedTimes[(count / 2) - 1];
+                TimeSpan middle2 = sortedTimes[count / 2];
+                medianTime = new TimeSpan((middle1.Ticks + middle2.Ticks) / 2);
+            }
+
+            // Calculate standard deviation.
+            double avgTicks = averageTime.Ticks;
+            double sumSquaredDifferences = handlingTimes.Sum(t => Math.Pow(t.Ticks - avgTicks, 2));
+            double stdDevTicks = Math.Sqrt(sumSquaredDifferences / count);
+            TimeSpan stdDevTime = new TimeSpan((long)stdDevTicks);
+
+            // Create a DataTable to hold the summary.
+            DataTable dt = new DataTable();
+            dt.Columns.Add("Metric", typeof(string));
+            dt.Columns.Add("Value", typeof(string));
+
+            // Format TimeSpan values into a readable string ("days:hours:minutes:seconds").
+            string FormatTimeSpan(TimeSpan ts) => ts.ToString(@"d\:hh\:mm\:ss");
+
+            dt.Rows.Add("Number of Tickets", count.ToString());
+            dt.Rows.Add("Minimum Handling Time", FormatTimeSpan(minTime));
+            dt.Rows.Add("Maximum Handling Time", FormatTimeSpan(maxTime));
+            dt.Rows.Add("Average Handling Time", FormatTimeSpan(averageTime));
+            dt.Rows.Add("Median Handling Time", FormatTimeSpan(medianTime));
+            dt.Rows.Add("Standard Deviation", FormatTimeSpan(stdDevTime));
+
+            // Bind the DataTable to the summary DataGridView.
+            summaryGrid.DataSource = dt;
+            summaryGrid.AutoSizeColumnsMode = DataGridViewAutoSizeColumnsMode.Fill;
+        }
+
     }
 }
