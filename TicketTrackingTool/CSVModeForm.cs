@@ -38,6 +38,16 @@ namespace TicketTrackingTool.Assets
             this.Resize += CSVModeForm_Resize;
         }
 
+        //Restriction Functions
+        private void restrictTabInput(object sender, TabControlCancelEventArgs e)
+        {
+            if (_data == null || !_data.Any())
+            {
+                MessageBox.Show("Must have data loaded first to view other tabs!");
+                e.Cancel = true;  // This stops the tab from switching.
+            }
+        }
+
         //Clean-up Functions
         private void CSVModeForm_Resize(object sender, EventArgs e)
         {
@@ -94,7 +104,18 @@ namespace TicketTrackingTool.Assets
                 progressBar1.Minimum = 0;
                 progressBar1.Value = 0;
 
-                _data = new List<string[]>(); // Initialize data storage
+                if (_data != null)
+                {
+                    _data.Clear();
+                } else
+                {
+                    _data = new List<string[]>(); // Initialize data storage
+                }
+
+                
+
+                //Clear any existing columns in the DataGridView so we get a fresh start
+                dataGridView1.Columns.Clear();
 
                 using (var reader = new StreamReader(filePath))
                 {
@@ -147,7 +168,7 @@ namespace TicketTrackingTool.Assets
         private void runStatistics()
         {
             StatsManager.calculateStats(_data, dataGridView1, chart1, trendLabel);
-            StatsManager.CalculateDeviceTrends("Device", "Created", _data, dataGridView1, chart2);
+            StatsManager.CalculateDeviceTrends("Tags", "Created", _data, dataGridView1, chart2);
         }
 
         //Search Functions
