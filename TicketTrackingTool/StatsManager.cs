@@ -75,7 +75,7 @@ namespace Stats
             chart.ChartAreas[0].AxisX.Interval = 1;
             chart.ChartAreas[0].AxisX.IntervalType = DateTimeIntervalType.Days;
             chart.ChartAreas[0].AxisX.ScaleView.ZoomReset();
-            chart.ChartAreas[0].AxisY.Title = "Ticket Trend by Timeline";
+            chart.Titles.Add("Ticket Trend by Timeline");
 
             //Create the main series
             Series mainSeries = new Series("Tickets Created")
@@ -152,12 +152,8 @@ namespace Stats
             chart.Update();
             chart.Refresh();
         }
-        public static void CalculateDeviceTrends(
-            string deviceColumnName,
-            string dateColumnName,
-            List<string[]> data,
-            DataGridView dataView,
-            Chart chart)
+        public static void CalculateDeviceTrends(string deviceColumnName, string dateColumnName, List<string[]> data,
+            DataGridView dataView, Chart chart)
         {
             //Ensure data exists
             if (data == null || data.Count == 0)
@@ -233,14 +229,13 @@ namespace Stats
             //Set up the legend and title
             Legend legend = new Legend("Devices") { Docking = Docking.Right };
             chart.Legends.Add(legend);
-            chart.Titles.Add("Device Trends (Device Name (Total Count))");
+            chart.Titles.Add("Ticket Count by Device");
 
             //Configure the chart area axes
             chartArea.AxisX.LabelStyle.Format = "MM/dd/yyyy";
             chartArea.AxisX.Interval = 1;
             chartArea.AxisX.IntervalType = DateTimeIntervalType.Days;
             chartArea.AxisX.Title = "Date";
-            chartArea.AxisY.Title = "Daily Ticket Count";
 
             //Determine the global minimum and maximum dates
             DateTime? globalMinDate = null;
@@ -312,10 +307,7 @@ namespace Stats
             chart.Refresh();
         }
 
-        public static void DisplayComprehensiveHandlingTimeStats(
-            List<string[]> data,
-            DataGridView dataView,
-            DataGridView summaryGrid)
+        public static void DisplayComprehensiveHandlingTimeStats(List<string[]> data, DataGridView dataView, DataGridView summaryGrid)
         {
             // Ensure data exists.
             if (data == null || data.Count == 0)
