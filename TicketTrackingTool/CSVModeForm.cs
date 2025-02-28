@@ -82,7 +82,7 @@ namespace TicketTrackingTool.Assets
             OpenFileDialog openFileDialog = new OpenFileDialog
             {
                 Title = "Select a file to parse",
-                Filter = "Text Files (*.txt)|*.txt|CSV Files (*.csv)|*.csv|All Files (*.*)|*.*"
+                Filter = "All Files (*.*)|*.*|Text Files (*.txt)|*.txt|CSV Files (*.csv)|*.csv"
             };
 
             if (openFileDialog.ShowDialog() == DialogResult.OK)
