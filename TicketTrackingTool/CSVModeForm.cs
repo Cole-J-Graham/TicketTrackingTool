@@ -3,6 +3,7 @@ using System.Collections;
 using System.Collections.Generic;
 using System.IO;
 using System.Linq;
+using System.Reflection;
 using System.Windows.Forms;
 using System.Windows.Forms.DataVisualization.Charting;
 using Stats;
@@ -21,6 +22,7 @@ namespace TicketTrackingTool.Assets
         public CSVModeForm()
         {
             InitializeComponent();
+            initializeProgramInfo();
             AssetManager.SetPictureBox(pictureBox1, AssetManager.WacogImagePath);
             
             // Initialize DataGridView for virtual mode
@@ -204,12 +206,20 @@ namespace TicketTrackingTool.Assets
 
             return fields.ToArray();
         }
-
         private void runStatistics()
         {
             StatsManager.calculateStats(_data, dataGridView1, chart1, trendLabel);
             StatsManager.CalculateDeviceTrends("Device", "Created", _data, dataGridView1, chart2);
             StatsManager.DisplayComprehensiveHandlingTimeStats(_data, dataGridView1, summaryDataGrid);
+        }
+        private void initializeProgramInfo()
+        {
+            // Version information.
+            infoVersion.Text = "Version 1.0";
+
+            // Approximate Application Size
+            FileInfo fi = new FileInfo(Assembly.GetEntryAssembly().Location);
+            infoGeneral.Text = "Path: " + fi + "\n";
         }
 
         //Search Functions

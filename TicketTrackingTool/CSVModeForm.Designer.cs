@@ -43,12 +43,15 @@
             this.tableLayoutPanel1 = new System.Windows.Forms.TableLayoutPanel();
             this.chart1 = new System.Windows.Forms.DataVisualization.Charting.Chart();
             this.chart2 = new System.Windows.Forms.DataVisualization.Charting.Chart();
+            this.summaryDataGrid = new System.Windows.Forms.DataGridView();
             this.trendLabel = new System.Windows.Forms.TextBox();
+            this.tabPage3 = new System.Windows.Forms.TabPage();
+            this.infoGeneral = new System.Windows.Forms.RichTextBox();
+            this.infoVersion = new System.Windows.Forms.TextBox();
             this.backgroundWorker1 = new System.ComponentModel.BackgroundWorker();
             this.progressBar1 = new System.Windows.Forms.ProgressBar();
             this.searchBar = new System.Windows.Forms.TextBox();
             this.Search = new System.Windows.Forms.Button();
-            this.summaryDataGrid = new System.Windows.Forms.DataGridView();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.tabControl1.SuspendLayout();
             this.tabPage1.SuspendLayout();
@@ -58,6 +61,7 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).BeginInit();
             ((System.ComponentModel.ISupportInitialize)(this.summaryDataGrid)).BeginInit();
+            this.tabPage3.SuspendLayout();
             this.SuspendLayout();
             // 
             // pictureBox1
@@ -86,6 +90,7 @@
             | System.Windows.Forms.AnchorStyles.Right)));
             this.tabControl1.Controls.Add(this.tabPage1);
             this.tabControl1.Controls.Add(this.tabPage2);
+            this.tabControl1.Controls.Add(this.tabPage3);
             this.tabControl1.Location = new System.Drawing.Point(33, 169);
             this.tabControl1.Name = "tabControl1";
             this.tabControl1.SelectedIndex = 0;
@@ -147,7 +152,7 @@
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Percent, 48.87738F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 278F));
             this.tableLayoutPanel1.RowStyles.Add(new System.Windows.Forms.RowStyle(System.Windows.Forms.SizeType.Absolute, 8F));
-            this.tableLayoutPanel1.Size = new System.Drawing.Size(806, 905);
+            this.tableLayoutPanel1.Size = new System.Drawing.Size(772, 905);
             this.tableLayoutPanel1.TabIndex = 2;
             // 
             // chart1
@@ -165,7 +170,7 @@
             series1.Legend = "Legend1";
             series1.Name = "Series1";
             this.chart1.Series.Add(series1);
-            this.chart1.Size = new System.Drawing.Size(800, 310);
+            this.chart1.Size = new System.Drawing.Size(766, 310);
             this.chart1.TabIndex = 0;
             this.chart1.Text = "chart1";
             // 
@@ -185,9 +190,18 @@
             series2.Legend = "Legend1";
             series2.Name = "Series1";
             this.chart2.Series.Add(series2);
-            this.chart2.Size = new System.Drawing.Size(802, 298);
+            this.chart2.Size = new System.Drawing.Size(768, 298);
             this.chart2.TabIndex = 1;
             this.chart2.Text = "chart2";
+            // 
+            // summaryDataGrid
+            // 
+            this.summaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
+            this.summaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
+            this.summaryDataGrid.Location = new System.Drawing.Point(3, 621);
+            this.summaryDataGrid.Name = "summaryDataGrid";
+            this.summaryDataGrid.Size = new System.Drawing.Size(766, 272);
+            this.summaryDataGrid.TabIndex = 2;
             // 
             // trendLabel
             // 
@@ -197,8 +211,35 @@
             this.trendLabel.Location = new System.Drawing.Point(6, 13);
             this.trendLabel.Name = "trendLabel";
             this.trendLabel.ReadOnly = true;
-            this.trendLabel.Size = new System.Drawing.Size(803, 20);
+            this.trendLabel.Size = new System.Drawing.Size(769, 20);
             this.trendLabel.TabIndex = 1;
+            // 
+            // tabPage3
+            // 
+            this.tabPage3.Controls.Add(this.infoGeneral);
+            this.tabPage3.Controls.Add(this.infoVersion);
+            this.tabPage3.Location = new System.Drawing.Point(4, 22);
+            this.tabPage3.Name = "tabPage3";
+            this.tabPage3.Padding = new System.Windows.Forms.Padding(3);
+            this.tabPage3.Size = new System.Drawing.Size(835, 339);
+            this.tabPage3.TabIndex = 2;
+            this.tabPage3.Text = "Program Info";
+            this.tabPage3.UseVisualStyleBackColor = true;
+            // 
+            // infoGeneral
+            // 
+            this.infoGeneral.Location = new System.Drawing.Point(194, 7);
+            this.infoGeneral.Name = "infoGeneral";
+            this.infoGeneral.Size = new System.Drawing.Size(635, 96);
+            this.infoGeneral.TabIndex = 2;
+            this.infoGeneral.Text = "";
+            // 
+            // infoVersion
+            // 
+            this.infoVersion.Location = new System.Drawing.Point(4, 7);
+            this.infoVersion.Name = "infoVersion";
+            this.infoVersion.Size = new System.Drawing.Size(163, 20);
+            this.infoVersion.TabIndex = 0;
             // 
             // progressBar1
             // 
@@ -226,15 +267,6 @@
             this.Search.UseVisualStyleBackColor = true;
             this.Search.Click += new System.EventHandler(this.searchButton);
             // 
-            // summaryDataGrid
-            // 
-            this.summaryDataGrid.ColumnHeadersHeightSizeMode = System.Windows.Forms.DataGridViewColumnHeadersHeightSizeMode.AutoSize;
-            this.summaryDataGrid.Dock = System.Windows.Forms.DockStyle.Fill;
-            this.summaryDataGrid.Location = new System.Drawing.Point(3, 621);
-            this.summaryDataGrid.Name = "summaryDataGrid";
-            this.summaryDataGrid.Size = new System.Drawing.Size(800, 272);
-            this.summaryDataGrid.TabIndex = 2;
-            // 
             // CSVModeForm
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 13F);
@@ -259,6 +291,8 @@
             ((System.ComponentModel.ISupportInitialize)(this.chart1)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.chart2)).EndInit();
             ((System.ComponentModel.ISupportInitialize)(this.summaryDataGrid)).EndInit();
+            this.tabPage3.ResumeLayout(false);
+            this.tabPage3.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -281,5 +315,8 @@
         private System.Windows.Forms.TableLayoutPanel tableLayoutPanel1;
         private System.Windows.Forms.DataVisualization.Charting.Chart chart2;
         private System.Windows.Forms.DataGridView summaryDataGrid;
+        private System.Windows.Forms.TabPage tabPage3;
+        private System.Windows.Forms.TextBox infoVersion;
+        private System.Windows.Forms.RichTextBox infoGeneral;
     }
 }
